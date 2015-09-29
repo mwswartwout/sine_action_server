@@ -1,6 +1,5 @@
 #include <ros/ros.h>
 #include "sine_action_server.h"
-#include <std_msgs/Float64.h>
 #include <math.h>
 #include <Sinusoid_Controller_With_Services/sinecontrol.h>
 
@@ -9,20 +8,20 @@ SineActionServer::SineActionServer() : as(n, "sine_control", boost::bind(&SineAc
     as.start();
 }
 
-void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action_server::sine_control>::GoalConstPtr& goal) {
-    ROS_INFO("Received frequency %f", goal.frequency);
-    frequency = goal.frequency; // Set frequency to value in request
+void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action_server::sine_controlAction>::GoalConstPtr& goal) {
+    ROS_INFO("Received frequency %f", goal->frequency);
+    frequency = goal->frequency; // Set frequency to value in request
     
-    ROS_INFO("Received amplitude %f", goal.amplitude);
-    amplitude = goal.amplitude; // Set amplitude to value in request
+    ROS_INFO("Received amplitude %f", goal->amplitude);
+    amplitude = goal->amplitude; // Set amplitude to value in request
     
-    ROS_INFO("Received number of cycles %f", goal.numCycles);
-    cycles = goal.cycles;
+    ROS_INFO("Received number of cycles %f", goal->cycles);
+    cycles = goal->cycles;
 
-    feedback.complete = false; // indicate new message received and hasn't been completed 
+    //feedback->complete = false; // indicate new message received and hasn't been completed 
 
     while (currentTime - startTime < cycles / frequency) {
-        sine = amplitude * sin(2*pi*frequency*currenTime); // Calculate sine value
+        sine = amplitude * sin(2*pi*frequency*currentTime); // Calculate sine value
         output.data = sine; // Store sine value in proper message format
         command_publisher.publish(output); // Publish value to vel_cmd topic
         t += dt; // Increment t by timeset dt
@@ -31,7 +30,7 @@ void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action
 
     amplitude = 0;
     frequency = 0;
-    feedback.complete = true; // everything is complete
+    //feedback.complete = true; // everything is complete
 }
 
 int main(int argc, char **argv) {

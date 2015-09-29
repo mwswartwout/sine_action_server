@@ -8,5 +8,5 @@
 class Sine_Action_Client {
     private:
         sine_action_server::sine_controlGoal goal;
-}
+};
 #endif

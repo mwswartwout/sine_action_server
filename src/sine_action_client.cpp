@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "sine_action_client");
-    actionlib::SimpleActionClient<sine_action_server::sine_control> action_client("sine_control", true);
+    actionlib::SimpleActionClient<sine_action_server::sine_controlAction> action_client("sine_control", true);
     
     ROS_INFO("waiting for server: ");
     bool server_exists = action_client.waitForServer(ros::Duration(5.0));
@@ -20,11 +20,11 @@ int main(int argc, char** argv) {
     bool finishedBeforeTimeout;
     while (ros::ok) {
         std::cout << std::endl;
-        std::cout << "Enter an amplitude (x to quit)";
+        std::cout << "Enter an amplitude (-1 to quit)";
         std::cout << std::endl;
         std::cin >> entry; // Get which variable user wants to change and save in type
         std::cout << std::endl;
-        if (type.compare("x") == 0) {
+        if (entry == -1) {
             return 0; // Exit if user typed "x"
         }
         goal.amplitude = entry;
