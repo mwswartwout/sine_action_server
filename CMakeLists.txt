@@ -5,8 +5,9 @@ project(sine_action_server)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  actionlib
-  roscpp
+    actionlib
+    roscpp
+    message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -57,17 +58,17 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+ add_action_files(
+   FILES
+   sine_control.action 
+ )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+    DEPENDENCIES
+    std_msgs  # Or other packages containing msgs
+    actionlib_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -127,16 +128,16 @@ include_directories(
 # add_dependencies(sine_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(sine_action_server_node src/sine_action_server_node.cpp)
+add_executable(sine_action_server src/sine_action_server.cpp)
+add_executable(sine_action_client src/sine_action_client.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(sine_action_server_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(sine_action_server_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(sine_action_server ${catkin_LIBRARIES})
+target_link_libraries(sine_action_client ${catkin_LIBRARIES})
 
 #############
 ## Install ##

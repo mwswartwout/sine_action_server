@@ -1,7 +1,7 @@
 #goal definition
 float64 amplitude
 float64 frequency
-int32   numCycles
+float64 cycles 
 ---
 #result definition
 #not needed
