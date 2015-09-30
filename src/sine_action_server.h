@@ -10,8 +10,7 @@ class SineActionServer {
 private:
     ros::Publisher command_publisher;
     ros::NodeHandle n;
-    ros::ServiceServer service;
-    ros::Rate naptime; 
+    //ros::Rate naptime;
     actionlib::SimpleActionServer<sine_action_server::sine_controlAction> as;
     sine_action_server::sine_controlGoal goal;
     std_msgs::Float64 output; // message wrapper for sine output
