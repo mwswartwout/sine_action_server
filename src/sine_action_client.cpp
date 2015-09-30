@@ -2,7 +2,7 @@
 #include <iostream>
 #include "sine_action_client.h"
 
-bool SineActionClient::getGoals() {
+void SineActionClient::getGoals() {
     bool finished = false;
     double entry;
  
@@ -43,14 +43,9 @@ int main(int argc, char** argv) {
 
     ROS_INFO("connected to action server");
 
-    bool finishedBeforeTimeout;
     while (ros::ok) {
-        if (!ac_object.getGoals()) { 
-            action_client.sendGoal(ac_object.goal);
-        }
-        else {
-            return 0;
-        }
+        ac_object.getGoals(); 
+        action_client.sendGoal(ac_object.goal);     
     }
 
     return 0;

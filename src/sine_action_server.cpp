@@ -32,6 +32,7 @@ void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action
 
     //feedback->complete = false; // indicate new message received and hasn't been completed 
     ros::Rate naptime(10);
+    startTime = currentTime;
     while (currentTime - startTime < cycles / frequency) {
         sine = amplitude * sin(2*pi*frequency*currentTime); // Calculate sine value
         output.data = sine; // Store sine value in proper message format
@@ -42,6 +43,7 @@ void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action
 
     amplitude = 0;
     frequency = 0;
+    as.setSucceeded();
     //feedback.complete = true; // everything is complete
 }
 

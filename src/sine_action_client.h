@@ -8,6 +8,6 @@
 class SineActionClient {
     public:
         sine_action_server::sine_controlGoal goal;
-        bool getGoals(); 
+        void getGoals(); 
 };
 #endif
