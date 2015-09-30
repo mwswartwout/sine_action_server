@@ -2,16 +2,15 @@
 #include <iostream>
 #include "sine_action_client.h"
 
-void SineActionClient::getGoals() {
-    bool finished = false;
+bool SineActionClient::getGoals() {
     double entry;
  
-    std::cout << "Enter an amplitude (-1 to quit)";
+    std::cout << "Enter an amplitude (< 0 to quit)";
     std::cout << std::endl;
     std::cin >> entry; // Get which variable user wants to change and save in type
     std::cout << std::endl;
-    if (entry == -1) {
-        finished = true; // Exit if user typed "x"
+    if (entry < 0) {
+        return true; // Exit if user typed a negative number 
     }
     goal.amplitude = entry;
 
@@ -26,11 +25,13 @@ void SineActionClient::getGoals() {
     std::cin >> entry; // Get which variable user wants to change and save in type
     std::cout << std::endl;
     goal.cycles = entry;
+
+    return false;
 }
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "sine_action_client");
-    actionlib::SimpleActionClient<sine_action_server::sine_controlAction> action_client("sine_control", true);
+    ros::init(argc, argv, "sine_action_client"); // init node
+    actionlib::SimpleActionClient<sine_action_server::sine_controlAction> action_client("sine_control", true); // init ActionClient
     SineActionClient ac_object;
 
     ROS_INFO("waiting for server: ");
@@ -42,10 +43,15 @@ int main(int argc, char** argv) {
     }
 
     ROS_INFO("connected to action server");
-
-    while (ros::ok) {
-        ac_object.getGoals(); 
-        action_client.sendGoal(ac_object.goal);     
+    bool finished = false;
+    while (ros::ok && !finished) {
+        finished = ac_object.getGoals();
+        if (!finished) { 
+            action_client.sendGoal(ac_object.goal);    
+        }
+        else {
+            return 0;
+        } 
     }
 
     return 0;

@@ -23,9 +23,10 @@ private:
     double pi;
     double dt;
     double sine;
-
+    
 public:
     SineActionServer();
+    void publishSine();
     void executeCB(const actionlib::SimpleActionServer<sine_action_server::sine_controlAction>::GoalConstPtr& goal);
 };
 #endif        

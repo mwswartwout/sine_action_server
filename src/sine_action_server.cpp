@@ -8,14 +8,13 @@ SineActionServer::SineActionServer() :
     ROS_INFO("In constructor of SineActionServer");
 
     command_publisher = n.advertise<std_msgs::Float64>("vel_cmd", 1); // publish to vel_cmd topic
-    ros::Rate naptime(10); //  = ros::Rate(10);
+    ros::Rate naptime(100); // set sleep rate to 100hz 
     amplitude = 0; // amplitude value for sine wave
     frequency = 0; // frequency value for sine wave
     pi = 3.14159; // value of pi
     currentTime = 0; // current time in calculation
     dt = naptime.expectedCycleTime().toSec(); // timestep for calculation
     sine = 0; // sine output
-    startTime = 0;
 
     as.start();
 }
@@ -28,23 +27,28 @@ void SineActionServer::executeCB(const actionlib::SimpleActionServer<sine_action
     amplitude = goal->amplitude; // Set amplitude to value in request
     
     ROS_INFO("Received number of cycles %f", goal->cycles);
-    cycles = goal->cycles;
+    cycles = goal->cycles; // Set cycles to value in request
 
-    //feedback->complete = false; // indicate new message received and hasn't been completed 
-    ros::Rate naptime(10);
-    startTime = currentTime;
-    while (currentTime - startTime < cycles / frequency) {
-        sine = amplitude * sin(2*pi*frequency*currentTime); // Calculate sine value
-        output.data = sine; // Store sine value in proper message format
-        command_publisher.publish(output); // Publish value to vel_cmd topic
+    ros::Rate naptime(100);
+    currentTime = 0; // reset time to 0 for each callback
+    while (currentTime < cycles / frequency) {
+        publishSine(); // Calculate sine value and publish it
         currentTime += dt; // Increment t by timeset dt
         naptime.sleep(); // Then sleep to keep updating to specified interval
     }
 
+    // After proper number of cycles have been printed
+    // reset everything to 0
     amplitude = 0;
     frequency = 0;
-    as.setSucceeded();
-    //feedback.complete = true; // everything is complete
+    publishSine();
+    as.setSucceeded(); // goal succeeded
+}
+
+void SineActionServer::publishSine() {
+    sine = amplitude * sin(2*pi*frequency*currentTime); // Calculate sine value
+    output.data = sine; // Store sine value in proper message format
+    command_publisher.publish(output); // Publish value to vel_cmd topic
 }
 
 int main(int argc, char **argv) {
